@@ -12,8 +12,13 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import argparse, json, os, subprocess, sys
+import argparse
+import json
+import os
+import subprocess
+
 from download_helper.downloaders import curseforge_minecraft
+
 
 def get_mod_data(mod, mc_version, release_phase):
     mod_data = curseforge_minecraft.get_data(mod, mc_version, release_phase)
@@ -26,8 +31,11 @@ def get_mod_data(mod, mc_version, release_phase):
 
     return mod_data
 
-parser = argparse.ArgumentParser(description='Download or update Minecraft mods from CurseForge. Change the mods in mods.txt to the CurseForge project IDs of the mods you want. (The CurseForge project ID is the "example-id" part of https://minecraft.curseforge.com/projects/example-id.) The mods will be downloaded to the downloads folder.')
-parser.add_argument('mc_version', help='Minecraft version to download mods for (supported: all versions between 1.7.2 and 1.12.2 that have Forge)')
+
+parser = argparse.ArgumentParser(
+    description='Download or update Minecraft mods from CurseForge. Change the mods in mods.txt to the CurseForge project IDs of the mods you want. (The CurseForge project ID is the "example-id" part of https://minecraft.curseforge.com/projects/example-id.) The mods will be downloaded to the downloads folder.')
+parser.add_argument('mc_version',
+                    help='Minecraft version to download mods for (supported: all versions between 1.7.2 and 1.12.2 that have Forge)')
 parser.add_argument('release_phase', help='Least stable release phase to accept (supported: Release, Beta, Alpha)')
 args = parser.parse_args()
 print(args)
