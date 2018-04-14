@@ -17,26 +17,21 @@ import json
 import os
 import subprocess
 
-from download_helper.downloaders import curseforge_minecraft
+from download_helper.downloaders import curseforge
 
-
-def get_mod_data(mod, mc_version, release_phase):
-    mod_data = curseforge_minecraft.get_data(mod, mc_version, release_phase)
-
-    if mod_data is None and release_phase == 'Release':
-        mod_data = curseforge_minecraft.get_data(mod, mc_version, 'Beta')
-
-    if mod_data is None and release_phase == 'Beta':
-        mod_data = curseforge_minecraft.get_data(mod, mc_version, 'Alpha')
-
-    return mod_data
-
+SRG_COMPAT_MAP = {
+    '1.8.9': ['1.8.8'],
+    '1.10': ['1.9.4'],
+    '1.10.2': ['1.10', '1.9.4'],
+    '1.11.2': ['1.11'],
+    '1.12.1': ['1.12'],
+    '1.12.2': ['1.12.1', '1.12'],
+}
 
 parser = argparse.ArgumentParser(
-    description='Download or update Minecraft mods from CurseForge. Change the mods in mods.txt to the CurseForge project IDs of the mods you want. (The CurseForge project ID is the "example-id" part of https://minecraft.curseforge.com/projects/example-id.) The mods will be downloaded to the downloads folder.')
-parser.add_argument('mc_version',
-                    help='Minecraft version to download mods for (supported: all versions between 1.7.2 and 1.12.2 that have Forge)')
-parser.add_argument('release_phase', help='Least stable release phase to accept (supported: Release, Beta, Alpha)')
+    description='Download or update Minecraft mods from CurseForge. Change the mods in mods.txt to the CurseForge addon slugs of the mods you want. (The CurseForge addon slug is the "example-id" part of https://minecraft.curseforge.com/projects/example-id.) The mods will be downloaded to the downloads folder.')
+parser.add_argument('mc_version', help='Minecraft version to download mods for')
+parser.add_argument('release_type', help='Least stable release type to accept (supported: Release, Beta, Alpha)')
 args = parser.parse_args()
 
 status = {}
@@ -48,25 +43,15 @@ if os.path.isfile('status.json'):
 if not os.path.isdir('downloads/'):
     os.mkdir('downloads/')
 
+extra_minecraft_versions = SRG_COMPAT_MAP[args.mc_version] if args.mc_version in SRG_COMPAT_MAP else []
 mods = open('mods.txt')
 
 for mod in mods:
     mod = mod[:-1]
     print('Checking for {} update...'.format(mod))
-    mod_data = get_mod_data(mod, args.mc_version, args.release_phase)
-
-    if mod_data is None and args.mc_version == '1.8.9':
-        mod_data = get_mod_data(mod, '1.8.8', args.release_phase)
-
-    if mod_data is None and args.mc_version == '1.10.2':
-        mod_data = get_mod_data(mod, '1.10.0', args.release_phase)
-
-    if mod_data is None and args.mc_version in ('1.10', '1.10.0', '1.10.2'):
-        mod_data = get_mod_data(mod, '1.9.4', args.release_phase)
-
-    if mod_data is None and args.mc_version == '1.11.2':
-        mod_data = get_mod_data(mod, '1.11.0', args.release_phase)
-
+    addon_id = curseforge.addon_slug_to_id('mc', mod)
+    mod_data = curseforge.get_data(addon_id, args.mc_version, args.release_type,
+                                   extra_game_versions=extra_minecraft_versions)
     old_mod_time = -1
 
     try:
