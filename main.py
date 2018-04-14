@@ -23,10 +23,10 @@ from download_helper.downloaders import curseforge_minecraft
 def get_mod_data(mod, mc_version, release_phase):
     mod_data = curseforge_minecraft.get_data(mod, mc_version, release_phase)
 
-    if mod_data == None and release_phase == 'Release':
+    if mod_data is None and release_phase == 'Release':
         mod_data = curseforge_minecraft.get_data(mod, mc_version, 'Beta')
 
-    if mod_data == None and release_phase == 'Beta':
+    if mod_data is None and release_phase == 'Beta':
         mod_data = curseforge_minecraft.get_data(mod, mc_version, 'Alpha')
 
     return mod_data
@@ -57,16 +57,16 @@ for mod in mods:
     mod_data = get_mod_data(mod, args.mc_version, args.release_phase)
     print(mod_data)
 
-    if mod_data == None and args.mc_version == '1.8.9':
+    if mod_data is None and args.mc_version == '1.8.9':
         mod_data = get_mod_data(mod, '1.8.8', args.release_phase)
 
-    if mod_data == None and args.mc_version == '1.10.2':
+    if mod_data is None and args.mc_version == '1.10.2':
         mod_data = get_mod_data(mod, '1.10.0', args.release_phase)
 
-    if mod_data == None and args.mc_version in ('1.10', '1.10.0', '1.10.2'):
+    if mod_data is None and args.mc_version in ('1.10', '1.10.0', '1.10.2'):
         mod_data = get_mod_data(mod, '1.9.4', args.release_phase)
 
-    if mod_data == None and args.mc_version == '1.11.2':
+    if mod_data is None and args.mc_version == '1.11.2':
         mod_data = get_mod_data(mod, '1.11.0', args.release_phase)
 
     old_mod_time = -1
