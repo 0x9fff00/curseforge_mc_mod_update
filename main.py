@@ -38,7 +38,6 @@ parser.add_argument('mc_version',
                     help='Minecraft version to download mods for (supported: all versions between 1.7.2 and 1.12.2 that have Forge)')
 parser.add_argument('release_phase', help='Least stable release phase to accept (supported: Release, Beta, Alpha)')
 args = parser.parse_args()
-print(args)
 
 status = {}
 
@@ -55,7 +54,6 @@ for mod in mods:
     mod = mod[:-1]
     print('Checking for {} update...'.format(mod))
     mod_data = get_mod_data(mod, args.mc_version, args.release_phase)
-    print(mod_data)
 
     if mod_data is None and args.mc_version == '1.8.9':
         mod_data = get_mod_data(mod, '1.8.8', args.release_phase)
