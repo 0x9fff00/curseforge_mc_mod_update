@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # Copyright (C) 2018 0x9fff00
 
 # This program is free software: you can redistribute it and/or modify
