@@ -52,7 +52,8 @@ def upgrade_status():
 
 def process_mod(addon_id, explicit=True):
     addon_data = curseforge.get_data(addon_id, args.mc_version, args.release_type,
-                                     extra_game_versions=extra_minecraft_versions)
+                                     extra_game_versions=extra_minecraft_versions,
+                                     allow_less_stable_release_types=args.allow_less_stable_release_types)
     old_mod_time = -1
 
     try:
@@ -82,6 +83,8 @@ parser = argparse.ArgumentParser(
     description='Download or update Minecraft mods from CurseForge. Change the mods in mods.txt to the CurseForge addon slugs of the mods you want. (The CurseForge addon slug is the "example-id" part of https://minecraft.curseforge.com/projects/example-id.) The mods will be downloaded to the downloads folder.')
 parser.add_argument('mc_version', help='Minecraft version to download mods for')
 parser.add_argument('release_type', help='Least stable release type to accept (supported: Release, Beta, Alpha)')
+parser.add_argument('--allow-less-stable-release-types', action='store_true',
+                    help='Allow less stable release types if a mod is not available with the specified release type. (default: false)')
 args = parser.parse_args()
 
 status = {
