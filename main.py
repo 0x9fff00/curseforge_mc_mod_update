@@ -31,6 +31,13 @@ SRG_COMPAT_MAP = {
 }
 
 
+def none_to_empty_list(input_):
+    if input_ is None:
+        return []
+    else:
+        return list(input_)
+
+
 def upgrade_status():
     global status
 
@@ -61,7 +68,7 @@ def process_mod(addon_id, explicit=True):
     except KeyError:
         pass
 
-    for dependency in addon_data['extra']['dependencies']:
+    for dependency in none_to_empty_list(addon_data['extra']['dependencies']):
         if dependency['Type'] == 'Required':
             pending_dependencies.append(dependency['AddOnId'])
 
